@@ -56,7 +56,7 @@ const SocketProvider = ({ children }) => {
 
   return (
     <div className="container p-8 max-w-[50%] h-screen flex flex-col justify-between mx-auto">
-      <div className="h-[90%] overflow-scroll px-4">
+      <div className="h-[90%] overflow-auto px-4">
         {messages?.map((item, idx) => (
           <div
             className={`chat ${
