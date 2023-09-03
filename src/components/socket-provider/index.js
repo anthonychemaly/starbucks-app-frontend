@@ -9,7 +9,7 @@ const SocketProvider = ({ children }) => {
   const [input, setInput] = useState(null);
   const [messages, setMessages] = useState([]);
 
-  const USER_ID = 1;
+  const USER_ID = process.env.NEXT_PUBLIC_USER_ID;
 
   useEffect(() => {
     function onConnect() {
@@ -43,6 +43,7 @@ const SocketProvider = ({ children }) => {
       {
         userId: USER_ID,
         message: input,
+        timestamp: new Date().toLocaleTimeString(),
       },
     ]);
 
@@ -50,6 +51,7 @@ const SocketProvider = ({ children }) => {
       userId: USER_ID,
       message: input,
     });
+    setInput("");
   }
 
   return (
@@ -74,7 +76,7 @@ const SocketProvider = ({ children }) => {
             </div>
             <div className="chat-header mb-1">
               {item?.userId === 1 ? "Anthony Chmexeye" : "Catherina (Za3al)"}
-              <time className="text-xs ml-2 opacity-50">12:45</time>
+              <time className="text-xs ml-2 opacity-50">{item?.timestamp}</time>
             </div>
             <div className="chat-bubble">{item?.message}</div>
           </div>
@@ -88,6 +90,7 @@ const SocketProvider = ({ children }) => {
           placeholder="Write your message here..."
           required
           onChange={(e) => setInput(e.target.value)}
+          value={input}
         />
         <button
           className="btn btn-primary ml-2 text-white"
