@@ -9,7 +9,7 @@ const SocketProvider = ({ children }) => {
   const [input, setInput] = useState(null);
   const [messages, setMessages] = useState([]);
 
-  const USER_ID = process.env.NEXT_PUBLIC_USER_ID;
+  const USER_ID = 1;
 
   useEffect(() => {
     function onConnect() {
@@ -56,7 +56,7 @@ const SocketProvider = ({ children }) => {
 
   return (
     <div className="container p-8 max-w-[50%] h-screen flex flex-col justify-between mx-auto">
-      <div>
+      <div className="h-[90%] overflow-scroll px-4">
         {messages?.map((item, idx) => (
           <div
             className={`chat ${
@@ -91,6 +91,11 @@ const SocketProvider = ({ children }) => {
           required
           onChange={(e) => setInput(e.target.value)}
           value={input}
+          onKeyPress={(e) => {
+            if (e.key === "Enter") {
+              sendMessage();
+            }
+          }}
         />
         <button
           className="btn btn-primary ml-2 text-white"
