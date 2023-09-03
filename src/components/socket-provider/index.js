@@ -7,6 +7,7 @@ import Image from "next/image";
 const SocketProvider = ({ children }) => {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [input, setInput] = useState(null);
+  const [messages, setMessages] = useState([]);
 
   const USER_ID = 1;
 
@@ -17,7 +18,7 @@ const SocketProvider = ({ children }) => {
     }
 
     function onMessageReceive(message) {
-      console.log(message);
+      setMessages((messages) => [...messages, message]);
     }
 
     function onDisconnect() {
@@ -37,6 +38,14 @@ const SocketProvider = ({ children }) => {
   }, []);
 
   function sendMessage() {
+    setMessages((messages) => [
+      ...messages,
+      {
+        userId: USER_ID,
+        message: input,
+      },
+    ]);
+
     socket.emit("send_message", {
       userId: USER_ID,
       message: input,
@@ -46,30 +55,30 @@ const SocketProvider = ({ children }) => {
   return (
     <div className="container p-8 max-w-[50%] h-screen flex flex-col justify-between mx-auto">
       <div>
-        <div className="chat chat-start">
-          <div className="chat-image avatar">
-            <div className="w-10 rounded-full">
-              <Image src="/za3al.JPG" alt="za3al" width={32} height={32} />
+        {messages?.map((item, idx) => (
+          <div
+            className={`chat ${
+              item?.userId === USER_ID ? "chat-end" : "chat-start"
+            }`}
+            key={idx}
+          >
+            <div className="chat-image avatar">
+              <div className="w-10 rounded-full">
+                <Image
+                  src={item?.userId === 1 ? "/anthony.jpeg" : "/za3al.JPG"}
+                  alt="profile picture"
+                  width={32}
+                  height={32}
+                />
+              </div>
             </div>
-          </div>
-          <div className="chat-header mb-1">
-            Catherina (Za3al)
-            <time className="text-xs ml-2 opacity-50">12:45</time>
-          </div>
-          <div className="chat-bubble">You were the Chosen One!</div>
-        </div>
-        <div className="chat chat-end">
-          <div className="chat-image avatar">
-            <div className="w-10 rounded-full">
-              <Image src="/anthony.jpeg" alt="Anthony" width={32} height={32} />
+            <div className="chat-header mb-1">
+              {item?.userId === 1 ? "Anthony Chmexeye" : "Catherina (Za3al)"}
+              <time className="text-xs ml-2 opacity-50">12:45</time>
             </div>
+            <div className="chat-bubble">{item?.message}</div>
           </div>
-          <div className="chat-header mb-1">
-            Anthony Chmexeye
-            <time className="text-xs ml-2 opacity-50">12:46</time>
-          </div>
-          <div className="chat-bubble">I hate you!</div>
-        </div>
+        ))}
       </div>
 
       <div className="flex">
